@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useAppContext } from '../components/state'
 
 export default function Home() {
-    const context = useAppContext()
+    const state = useAppContext()
 
     return (
         <Grid container direction='column' spacing={2}>

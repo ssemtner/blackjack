@@ -53,9 +53,11 @@ export default function Game({ startingDeck }) {
         } else if (playerScore > 21) {
             setMessage('Player busted')
             setWinner('dealer')
+            setTurn('end')
         } else if (dealerScore > 21) {
             setMessage('Dealer busted')
             setWinner('player')
+            setTurn('end')
         }
     }, [playerScore, dealerScore])
 
