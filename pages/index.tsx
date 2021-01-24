@@ -6,19 +6,24 @@ import { playingCard } from '../components/playing-card'
 import { drawCard, generateDeck } from '../lib/deck'
 import { getHandScore } from '../lib/score'
 
+type winner = false | 'player' | 'dealer'
+
 export default function Home({ startingDeck }) {
     const [deck, setDeck] = useState<Array<playingCard>>([])
     const [playerHand, setPlayerHand] = useState<Array<playingCard>>([])
     const [playerScore, setPlayerScore] = useState<Number>(0)
     const [dealerHand, setDealerHand] = useState<Array<playingCard>>([])
     const [dealerScore, setDealerScore] = useState<Number>(0)
-    const [inGame, setInGame] = useState<boolean>(true)
-    const [playerTurn, setPlayerTurn] = useState<boolean>(true)
+    const [dealerCardsHidden, setDealerCardsHidden] = useState<boolean>(true)
+    const [status, setStatus] = useState<String>('')
+    const [winner, setWinner] = useState<winner>(false)
 
     // Handles reseting the deck
     useEffect(() => {
-        setDeck(generateDeck())
+        setDeck(startingDeck)
     }, [])
+
+    // Handles dealing
     useEffect(() => {
         // If no hands exist, deal them
         if (dealerHand.length == 0 && deck.length > 0) {
@@ -33,46 +38,30 @@ export default function Home({ startingDeck }) {
         }
     }, [deck])
 
-    // Handles hiding dealers cards
-    useEffect(() => {
-        if (playerTurn) {
-            // Hide cards
-            const newDealerHand = [...dealerHand]
-
-            for (let i = 1; i < newDealerHand.length; i++) {
-                newDealerHand[i].back = true
-            }
-
-            setDealerHand(newDealerHand)
-        } else {
-            // Reveal cards
-            const newDealerHand = [...dealerHand]
-            for (let card of newDealerHand) {
-                card.back = false
-            }
-            setDealerHand(newDealerHand)
-
-            getHandScore(dealerHand)
-        }
-    }, [playerTurn])
-
     // Handles calculting scores
     useEffect(() => {
         setDealerScore(getHandScore(dealerHand))
         setPlayerScore(getHandScore(playerHand))
     }, [playerHand, dealerHand])
 
+    // Handles checking for win conditions
+    useEffect(() => {
+        if (playerScore > 21) {
+            setStatus('Player busted')
+        }
+    }, [playerScore, dealerScore])
+
     function handleHit() {
         setPlayerHand([...playerHand, drawCard([...deck], setDeck)])
     }
 
     function handleStand() {
-        setPlayerTurn(false)
+        setDealerCardsHidden(false)
     }
 
     return (
         <Grid container direction='column' spacing={2}>
-            <Hand dealer hand={dealerHand} />
+            <Hand dealer hidden={dealerCardsHidden} hand={[...dealerHand]} />
             <Grid item>
                 <br />
                 <br />
@@ -82,7 +71,9 @@ export default function Home({ startingDeck }) {
                 <p>
                     player score: {playerScore} | dealer score: {dealerScore}
                 </p>
-                {inGame ? (
+                {winner ? (
+                    <p>Over</p>
+                ) : (
                     <>
                         <Grid item>
                             <Button
@@ -103,8 +94,6 @@ export default function Home({ startingDeck }) {
                             </Button>
                         </Grid>
                     </>
-                ) : (
-                    <p>Over</p>
                 )}
             </Grid>
 
@@ -113,12 +102,12 @@ export default function Home({ startingDeck }) {
     )
 }
 
-// export const getStaticProps: GetStaticProps = async () => {
-//     const startingDeck = generateDeck()
+export const getStaticProps: GetStaticProps = async () => {
+    const startingDeck = generateDeck()
 
-//     return {
-//         props: {
-//             startingDeck,
-//         },
-//     }
-// }
+    return {
+        props: {
+            startingDeck,
+        },
+    }
+}
