@@ -22,7 +22,7 @@ export default function Home({ startingDeck }) {
 
     // Handles dealing
     useEffect(() => {
-        // If no hands exist, deal them
+        // If no hands exist, deal
         if (dealerHand.length == 0 && deck.length > 0) {
             setDealerHand([
                 drawCard([...deck], setDeck),
@@ -97,15 +97,15 @@ export default function Home({ startingDeck }) {
         }
     }, [turn, dealerScore])
 
-    function handleHit() {
+    function hit() {
         setPlayerHand([...playerHand, drawCard([...deck], setDeck)])
     }
 
-    function handleStand() {
+    function stand() {
         setTurn('dealer')
     }
 
-    function handleReset() {
+    function reset() {
         setWinner(false)
         setMessage('')
         setTurn('player')
@@ -118,12 +118,12 @@ export default function Home({ startingDeck }) {
 
     return (
         <Grid container direction='column' spacing={2}>
-            <Hand dealer hidden={turn == 'dealer'} hand={[...dealerHand]} />
+            <Hand dealer hidden={turn == 'player'} hand={[...dealerHand]} />
 
             <Grid item container justify='center' spacing={2}>
-                <p>
+                {turn != 'player' ? (<p>
                     player score: {playerScore} | dealer score: {dealerScore}
-                </p>
+                </p>) : ''}
             </Grid>
             <Grid item container justify='center' spacing={2}>
                 {winner ? (
@@ -133,7 +133,7 @@ export default function Home({ startingDeck }) {
                         <Button
                             color='secondary'
                             variant='outlined'
-                            onClick={handleReset}
+                            onClick={reset}
                         >
                             Reset
                         </Button>
@@ -144,7 +144,7 @@ export default function Home({ startingDeck }) {
                             <Button
                                 color='primary'
                                 variant='outlined'
-                                onClick={handleHit}
+                                onClick={hit}
                             >
                                 Hit
                             </Button>
@@ -153,7 +153,7 @@ export default function Home({ startingDeck }) {
                             <Button
                                 color='primary'
                                 variant='outlined'
-                                onClick={handleStand}
+                                onClick={stand}
                             >
                                 Stand
                             </Button>
