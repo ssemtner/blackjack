@@ -9,14 +9,6 @@ export default function Hand({
     dealer?: boolean
     hand: Array<playingCard>
 }) {
-    if (dealer) {
-        console.log('dealer')
-        for (let card of hand) {
-            card.back = true
-        }
-        hand[0].back = false
-    }
-
     return (
         <>
             <Grid item container justify='center'>
@@ -25,8 +17,8 @@ export default function Hand({
                 </Typography>
             </Grid>
             <Grid item container justify='center'>
-                {hand.map((card) => (
-                    <PlayingCard {...card} />
+                {hand.map((card, index) => (
+                    <PlayingCard {...card} key={index} />
                 ))}
             </Grid>
         </>
