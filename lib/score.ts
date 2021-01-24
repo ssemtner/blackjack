@@ -16,7 +16,7 @@ export function getHandScore(hand: Array<playingCard>): number {
 
         total += value
 
-        if (total > 21) {
+        if (total > 21 && aces > 0) {
             aces--
             total -= 10
         }

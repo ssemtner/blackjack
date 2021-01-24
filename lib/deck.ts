@@ -25,3 +25,17 @@ export function generateDeck() {
 
     return deck
 }
+
+export function drawCard(
+    deck: Array<playingCard>,
+    setter: Function
+): playingCard {
+    const index: number = Math.floor(Math.random() * deck.length)
+    const toReturn: playingCard = deck[index]
+    
+    deck.splice(index, 1)
+
+    setter(deck)
+
+    return toReturn
+}

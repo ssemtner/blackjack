@@ -3,28 +3,35 @@ import { GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
 import Hand from '../components/hand'
 import { playingCard } from '../components/playing-card'
-import { generateDeck } from '../lib/deck'
+import { drawCard, generateDeck } from '../lib/deck'
 import { getHandScore } from '../lib/score'
 
 export default function Home({ startingDeck }) {
     const [deck, setDeck] = useState<Array<playingCard>>([])
-    const [playerHand, setPlayerHand] = useState<Array<playingCard>>([
-        { suit: 'heart', value: 'jack' },
-        { suit: 'diamond', value: '8' },
-    ])
+    const [playerHand, setPlayerHand] = useState<Array<playingCard>>([])
     const [playerScore, setPlayerScore] = useState<Number>(0)
-    const [dealerHand, setDealerHand] = useState<Array<playingCard>>([
-        { suit: 'diamond', value: '1' },
-        { suit: 'spade', value: '2' },
-    ])
+    const [dealerHand, setDealerHand] = useState<Array<playingCard>>([])
     const [dealerScore, setDealerScore] = useState<Number>(0)
     const [inGame, setInGame] = useState<boolean>(true)
     const [playerTurn, setPlayerTurn] = useState<boolean>(true)
 
     // Handles reseting the deck
     useEffect(() => {
-        setDeck(startingDeck)
+        setDeck(generateDeck())
     }, [])
+    useEffect(() => {
+        // If no hands exist, deal them
+        if (dealerHand.length == 0 && deck.length > 0) {
+            setDealerHand([
+                drawCard([...deck], setDeck),
+                drawCard([...deck], setDeck),
+            ])
+            setPlayerHand([
+                drawCard([...deck], setDeck),
+                drawCard([...deck], setDeck),
+            ])
+        }
+    }, [deck])
 
     // Handles hiding dealers cards
     useEffect(() => {
@@ -49,13 +56,14 @@ export default function Home({ startingDeck }) {
         }
     }, [playerTurn])
 
-    // Handles calculting the player hand score
+    // Handles calculting scores
     useEffect(() => {
-        getHandScore(playerHand)
-    }, [playerHand])
+        setDealerScore(getHandScore(dealerHand))
+        setPlayerScore(getHandScore(playerHand))
+    }, [playerHand, dealerHand])
 
     function handleHit() {
-        setPlayerHand([...playerHand, { suit: 'club', value: '3' }])
+        setPlayerHand([...playerHand, drawCard([...deck], setDeck)])
     }
 
     function handleStand() {
@@ -71,6 +79,9 @@ export default function Home({ startingDeck }) {
             </Grid>
 
             <Grid item container justify='center' spacing={2}>
+                <p>
+                    player score: {playerScore} | dealer score: {dealerScore}
+                </p>
                 {inGame ? (
                     <>
                         <Grid item>
@@ -102,12 +113,12 @@ export default function Home({ startingDeck }) {
     )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-    const startingDeck = generateDeck()
+// export const getStaticProps: GetStaticProps = async () => {
+//     const startingDeck = generateDeck()
 
-    return {
-        props: {
-            startingDeck,
-        },
-    }
-}
+//     return {
+//         props: {
+//             startingDeck,
+//         },
+//     }
+// }
