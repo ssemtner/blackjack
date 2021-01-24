@@ -1,8 +1,4 @@
-export default function PlayingCard({
-    suit,
-    value,
-    back,
-}: {
+export interface playingCard {
     suit: 'heart' | 'diamond' | 'spade' | 'club'
     value:
         | '1'
@@ -19,14 +15,23 @@ export default function PlayingCard({
         | 'queen'
         | 'king'
     back?: boolean
-}) {
+}
+
+const SCALE: number = 0.8
+const WIDTH: number = 169.075
+const HEIGHT: number = 244.64
+
+export default function PlayingCard({
+    suit,
+    value,
+    back,
+}: playingCard) {
     return (
         <svg
-            style={{ margin: '10px' }}
-            width='169.075'
-            height='244.64'
+            style={{ margin: '-25px 10px', transform: `scale(${SCALE})` }}
+            width={WIDTH}
+            height={HEIGHT}
             xmlns='http://www.w3.org/2000/svg'
-            preserveAspectRatio='xMinYMid'
         >
             <use
                 href={
