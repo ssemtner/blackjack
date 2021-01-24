@@ -1,19 +1,22 @@
+export type cardSuit = 'heart' | 'diamond' | 'spade' | 'club'
+export type cardValue =
+    | '1'
+    | '2'
+    | '3'
+    | '4'
+    | '5'
+    | '6'
+    | '7'
+    | '8'
+    | '9'
+    | '10'
+    | 'jack'
+    | 'queen'
+    | 'king'
+
 export interface playingCard {
-    suit: 'heart' | 'diamond' | 'spade' | 'club'
-    value:
-        | '1'
-        | '2'
-        | '3'
-        | '4'
-        | '5'
-        | '6'
-        | '7'
-        | '8'
-        | '9'
-        | '10'
-        | 'jack'
-        | 'queen'
-        | 'king'
+    suit: cardSuit
+    value: cardValue
     back?: boolean
 }
 
@@ -21,11 +24,7 @@ const SCALE: number = 0.8
 const WIDTH: number = 169.075
 const HEIGHT: number = 244.64
 
-export default function PlayingCard({
-    suit,
-    value,
-    back,
-}: playingCard) {
+export default function PlayingCard({ suit, value, back }: playingCard) {
     return (
         <svg
             style={{ margin: '-25px 10px', transform: `scale(${SCALE})` }}
