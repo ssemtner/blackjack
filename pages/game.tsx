@@ -1,13 +1,17 @@
 import { Button, Grid } from '@material-ui/core'
 import { GetStaticProps } from 'next'
+import { useRouter } from 'next/dist/client/router'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Hand from '../components/hand'
 import { playingCard } from '../components/playing-card'
+import { useAppContext } from '../components/state'
 import { drawCard, generateDeck } from '../lib/deck'
 import { getHandScore } from '../lib/score'
 
 export default function Game({ startingDeck }) {
+    const state = useAppContext()
+    const router = useRouter()
     const [deck, setDeck] = useState<Array<playingCard>>(startingDeck)
     const [playerHand, setPlayerHand] = useState<Array<playingCard>>([])
     const [playerScore, setPlayerScore] = useState<Number>(0)
@@ -53,11 +57,9 @@ export default function Game({ startingDeck }) {
         } else if (playerScore > 21) {
             setMessage('Player busted')
             setWinner('dealer')
-            setTurn('end')
         } else if (dealerScore > 21) {
             setMessage('Dealer busted')
             setWinner('player')
-            setTurn('end')
         }
     }, [playerScore, dealerScore])
 
@@ -96,6 +98,14 @@ export default function Game({ startingDeck }) {
         }
     }, [turn, dealerScore])
 
+    useEffect(() => {
+        if (winner == 'player') {
+            state.setBalance(state.balance + 2 * state.bet)
+        } else if (winner == 'push') {
+            state.setBalance(state.balance + state.bet)
+        }
+    }, [winner])
+
     function hit() {
         setPlayerHand([...playerHand, drawCard([...deck], setDeck)])
     }
@@ -113,6 +123,7 @@ export default function Game({ startingDeck }) {
         setDealerHand([])
         setPlayerHand([])
         setDeck(startingDeck)
+        router.push('/bet')
     }
 
     return (
@@ -130,7 +141,7 @@ export default function Game({ startingDeck }) {
                 <Hand dealer hidden={turn == 'player'} hand={[...dealerHand]} />
 
                 <Grid item container justify='center' spacing={2}>
-                    {turn != 'player' ? (
+                    {winner != '' ? (
                         <p>
                             player score: {playerScore} | dealer score:{' '}
                             {dealerScore}
@@ -191,4 +202,3 @@ export const getStaticProps: GetStaticProps = async () => {
         },
     }
 }
-

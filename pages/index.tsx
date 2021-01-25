@@ -18,7 +18,7 @@ export default function Home() {
             </Grid>
             <br />
             <Grid item container justify='center'>
-                <Link href='/game'>
+                <Link href='/bet'>
                     <Button variant='contained' color='primary'>
                         Start Game
                     </Button>

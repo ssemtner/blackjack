@@ -33,7 +33,7 @@ export default function Bet() {
         } else {
             setStatus(false)
             state.setBet(amount)
-            state.setBalance(state.balance - state.bet)
+            state.setBalance(state.balance - amount)
             router.push('/game')
         }
     }
