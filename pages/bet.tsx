@@ -5,7 +5,7 @@ import {
     IconButton,
     TextField,
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/close'
+// import CloseIcon from '@material-ui/icons/close'
 import Alert from '@material-ui/lab/Alert'
 import { useRouter } from 'next/dist/client/router'
 import React, { ChangeEvent, useState } from 'react'
@@ -51,7 +51,8 @@ export default function Bet() {
                                 setStatus(false)
                             }}
                         >
-                            <CloseIcon />
+                            {/* <CloseIcon /> */}
+                            X
                         </IconButton>
                     }
                 >
